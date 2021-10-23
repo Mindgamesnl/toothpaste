@@ -29,6 +29,6 @@ fmt.Println(renderer.Render(context, readHtmlTest("index.html")))
 ```
 
 ## Examples
- - [Templating simple variables](examples/simple-variable/readme.md)
- - [Templating HTMl unescaped variables](examples/unescaped-variable/readme.md)
- - [Advanced includes](examples/include-example/readme.md)
+ - [Templating simple variables](examples/simple-variable/)
+ - [Templating HTMl unescaped variables](examples/unescaped-variable/)
+ - [Advanced includes](examples/include-example/)
