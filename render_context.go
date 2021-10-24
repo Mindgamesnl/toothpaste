@@ -1,16 +1,16 @@
 package toothpaste
 
 type RenderContext struct {
-	variables map[string]string
+	variables map[string]interface{}
 }
 
 func NewRenderContext() *RenderContext {
 	return &RenderContext{
-		variables: map[string]string{},
+		variables: map[string]interface{}{},
 	}
 }
 
-func (r *RenderContext) getVariable(key string) (string, bool) {
+func (r *RenderContext) getVariable(key string) (interface{}, bool) {
 	v, f := r.variables[key]
 	return v, f
 }
