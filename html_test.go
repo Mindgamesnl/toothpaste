@@ -1,6 +1,7 @@
 package toothpaste
 
 import (
+	"github.com/stretchr/testify/assert"
 	"io/ioutil"
 	"testing"
 )
@@ -12,11 +13,13 @@ func TestHelloNameHtml(t *testing.T) {
 	var renderer = NewRenderer()
 
 	context.SetVariable("name", "joost")
-	context.SetVariable("cool_level", "fucking")
 	renderer.RegisterComponent("logo", readHtmlTest("testdata/logo.html"))
 
-	var body = renderer.Render(context, content)
-	t.Log(body)
+	context.SetVariable("cool_level", "very")
+	assert.Contains(t, renderer.Render(context, content), "awesome")
+
+	context.SetVariable("cool_level", "neat")
+	assert.Contains(t, renderer.Render(context, content), "neat")
 }
 
 func readHtmlTest(f string) string {

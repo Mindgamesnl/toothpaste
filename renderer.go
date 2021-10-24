@@ -1,9 +1,7 @@
 package toothpaste
 
 import (
-	"fmt"
 	"sort"
-	"strings"
 )
 
 type Renderer struct {
@@ -64,11 +62,7 @@ func (r *Renderer) Render(renderContext *RenderContext, input string) string {
 		var r = treeResult[i]
 		var a = input
 		input = input[:r.start - removedBytes] + r.newValue + a[r.end-removedBytes:]
-		//removedBytes += r.end - r.start
-		//removedBytes -= len(r.newValue)
 	}
-
-	fmt.Println(treeResult)
 
 	// render plain nodes (include, and variable types)
 	var plainNodes = findPlainNodes(input)
@@ -85,11 +79,5 @@ func (r *Renderer) Render(renderContext *RenderContext, input string) string {
 			input = input[:plainNodes[i].start] + value + input[plainNodes[i].end:]
 		}
 	}
-
-	input = strings.Replace(input, "\n\n", "\n", -1)
 	return input
-}
-
-func remove(slice []rune, s int, end int) []rune {
-	return append(slice[:s], slice[end:]...)
 }
