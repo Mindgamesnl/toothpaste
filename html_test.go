@@ -11,10 +11,12 @@ func TestHelloNameHtml(t *testing.T) {
 	var context = NewRenderContext()
 	var renderer = NewRenderer()
 
-	context.SetVariable("name", "Mats")
+	context.SetVariable("name", "joost")
+	context.SetVariable("cool_level", "fucking")
 	renderer.RegisterComponent("logo", readHtmlTest("testdata/logo.html"))
 
-	t.Log(renderer.RecursiveRender(context, content, nil))
+	var body = renderer.Render(context, content)
+	t.Log(body)
 }
 
 func readHtmlTest(f string) string {

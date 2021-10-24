@@ -2,23 +2,47 @@ package toothpaste
 
 import "regexp"
 
-var SEARCH_PATTERN *regexp.Regexp
+var PLAIN_SEARCH_PATTERN *regexp.Regexp
+var TREE_SEARCH_PATTERN *regexp.Regexp
 
-func getPatternMatcher() *regexp.Regexp {
-	if SEARCH_PATTERN == nil {
-		r, _ := regexp.Compile(`{{ [^/{}]* }}`)
-		SEARCH_PATTERN = r
+func getTreePatternMatcher() *regexp.Regexp {
+	if TREE_SEARCH_PATTERN == nil {
+		r, _ := regexp.Compile(`{\% [^/{}]* \%}`)
+		TREE_SEARCH_PATTERN = r
 	}
-	return SEARCH_PATTERN
+	return TREE_SEARCH_PATTERN
 }
 
-func findNodesIn(root string) []Node {
-	var nodes []Node
-	var elements = getPatternMatcher().FindAllStringIndex(root, -1)
+func getPlainpatternMatcher() *regexp.Regexp {
+	if PLAIN_SEARCH_PATTERN == nil {
+		r, _ := regexp.Compile(`{{ [^/{}]* }}`)
+		PLAIN_SEARCH_PATTERN = r
+	}
+	return PLAIN_SEARCH_PATTERN
+}
+
+func findTreeNodes(root string) []TreeNode {
+	var nodes []TreeNode
+	var elements = getTreePatternMatcher().FindAllStringIndex(root, -1)
 	for i := range elements {
 		var element = elements[i]
 
-		nodes = append(nodes, Node{
+		nodes = append(nodes, TreeNode{
+			start: element[0],
+			end: element[1],
+			hasTextCache: false,
+		})
+	}
+	return nodes
+}
+
+func findPlainNodes(root string) []PlainNode {
+	var nodes []PlainNode
+	var elements = getPlainpatternMatcher().FindAllStringIndex(root, -1)
+	for i := range elements {
+		var element = elements[i]
+
+		nodes = append(nodes, PlainNode{
 			start: element[0],
 			end: element[1],
 			hasTextCache: false,
