@@ -54,7 +54,9 @@ func TestRender(t *testing.T)  {
 	context.SetVariable("son_name", "Joost")
 
 	// check if the output is formatted perfectly
-	assert.Equal(t, renderer.Render(context, root), "Good to see you, Bart! how are you? and how is your son Joost?")
+	renderOutput, renderErr := renderer.Render(context, root)
+	assert.Nil(t, renderErr)
+	assert.Equal(t, renderOutput, "Good to see you, Bart! how are you? and how is your son Joost?")
 }
 
 

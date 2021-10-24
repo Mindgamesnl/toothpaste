@@ -85,7 +85,7 @@ func (n *PlainNode) evaluate(root string, c *RenderContext, r *Renderer) (string
 		if !found {
 			return "", errors.New("Couldn't find the component '" + whatToInclude + "'")
 		}
-		return r.Render(c, value), nil
+		return r.Render(c, value)
 	}
 
 	return "", errors.New("ERROR! Couldn't evaluate '" + (content) + "' of type " + strconv.Itoa(int(nodeType)))

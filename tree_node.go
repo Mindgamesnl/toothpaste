@@ -1,6 +1,7 @@
 package toothpaste
 
 import (
+	"errors"
 	"strconv"
 	"strings"
 )
@@ -27,6 +28,8 @@ type TreeNode struct {
 	nodeType     TreeNodeType
 	tag          string
 	isRoot       bool
+
+	failure error
 }
 
 func (n *TreeNode) getText(root string) string {
@@ -57,6 +60,8 @@ func (n *TreeNode) parseType(root string) TreeNodeType {
 }
 
 func (n *TreeNode) makeErrorNode(message string) []TreeReturnReplacement {
+	n.failure = errors.New(message)
+
 	return []TreeReturnReplacement{
 		{
 			start: n.contentStart,
@@ -98,6 +103,9 @@ func (n *TreeNode) render(c *RenderContext) []TreeReturnReplacement {
 			var renderResults = n.children[i].render(c)
 			for i2 := range renderResults {
 				responses = append(responses, renderResults[i2])
+			}
+			if n.children[i].failure != nil {
+				n.failure = n.children[i].failure
 			}
 		}
 		return responses
@@ -141,6 +149,12 @@ func (n *TreeNode) render(c *RenderContext) []TreeReturnReplacement {
 				for i2 := range renderResults {
 					responses = append(responses, renderResults[i2])
 				}
+
+				// does it have an error?
+				if n.children[i].failure != nil {
+					n.failure = n.children[i].failure
+				}
+
 			}
 			return responses
 		}

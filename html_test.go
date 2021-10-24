@@ -16,10 +16,14 @@ func TestHelloNameHtml(t *testing.T) {
 	renderer.RegisterComponent("logo", readHtmlTest("testdata/logo.html"))
 
 	context.SetVariable("cool_level", "very")
-	assert.Contains(t, renderer.Render(context, content), "awesome")
+	renderOutput, err := renderer.Render(context, content)
+	assert.Nil(t, err)
+	assert.Contains(t, renderOutput, "awesome")
 
 	context.SetVariable("cool_level", "neat")
-	assert.Contains(t, renderer.Render(context, content), "neat")
+	renderOutput, err = renderer.Render(context, content)
+	assert.Nil(t, err)
+	assert.Contains(t, renderOutput, "neat")
 }
 
 func readHtmlTest(f string) string {

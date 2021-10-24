@@ -18,7 +18,7 @@ func (r *Renderer) RegisterComponent(name string, value string)  {
 	r.components[name] = value
 }
 
-func (r *Renderer) Render(renderContext *RenderContext, input string) string {
+func (r *Renderer) Render(renderContext *RenderContext, input string) (string, error) {
 	// render tree nodes (if, for, etc)
 	var treeNodes = findTreeNodes(input)
 
@@ -79,5 +79,5 @@ func (r *Renderer) Render(renderContext *RenderContext, input string) string {
 			input = input[:plainNodes[i].start] + value + input[plainNodes[i].end:]
 		}
 	}
-	return input
+	return input, rootTreeNode.failure
 }
