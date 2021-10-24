@@ -15,6 +15,6 @@ func (r *RenderContext) getVariable(key string) (interface{}, bool) {
 	return v, f
 }
 
-func (r *RenderContext) SetVariable(name string, value string)  {
+func (r *RenderContext) SetVariable(name string, value interface{})  {
 	r.variables[name] = value
 }

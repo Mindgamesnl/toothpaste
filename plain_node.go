@@ -60,7 +60,7 @@ func (n *PlainNode) evaluate(root string, c *RenderContext, r *Renderer) (string
 		if !found {
 			return "", errors.New("Couldn't find a value for '" + (content[2:]) + "'")
 		}
-		return value.(string), nil
+		return evaluateVariableValue(value, c), nil
 		break
 
 	case PLAIN_NODE_TYPE_VARIABLE_ESCAPED:
@@ -69,7 +69,7 @@ func (n *PlainNode) evaluate(root string, c *RenderContext, r *Renderer) (string
 		if !found {
 			return "", errors.New("Couldn't find a value for '" + (content[1:]) + "'")
 		}
-		return html.EscapeString(value.(string)), nil
+		return html.EscapeString(evaluateVariableValue(value, c)), nil
 		break
 
 	case PLAIN_NODE_TYPE_INCLUDE:
@@ -78,7 +78,7 @@ func (n *PlainNode) evaluate(root string, c *RenderContext, r *Renderer) (string
 		// does it start with an @? if so, resolve it
 		lookupValue, lookupFound := c.variables[(whatToInclude[1:])]
 		if lookupFound {
-			whatToInclude = lookupValue.(string)
+			whatToInclude = evaluateVariableValue(lookupValue, c)
 		}
 
 		value, found := r.components[whatToInclude]

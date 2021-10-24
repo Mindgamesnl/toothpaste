@@ -9,8 +9,14 @@ import (
 func TestHelloNameHtml(t *testing.T) {
 	var content = readHtmlTest("testdata/hello-name.html")
 
-	var context = NewRenderContext()
 	var renderer = NewRenderer()
+	var context = NewRenderContext()
+	context.SetVariable("user_state", func(ctx *RenderContext) string {
+		// check if the user is logged in, and return the state
+		return "logged_in"
+	})
+
+	context.SetVariable("name", "Mats")
 
 	context.SetVariable("name", "joost")
 	renderer.RegisterComponent("logo", readHtmlTest("testdata/logo.html"))

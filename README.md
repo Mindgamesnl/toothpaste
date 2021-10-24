@@ -5,26 +5,37 @@ ToothPaste is an extremely basic Text/HTML formatting system with some nice util
  - (recursively) including other templates with passed variable context
  - using variables as arguments
  - (nested) if statements
+ - template functions
 
+## Variables
+Variables can be a `string`, `int`, `int8`, `int16`, `int64` and `func(ctx *RenderContext) string`. Variable types (or processors) will be resolved everytime a variable is invoked from your template. You can use functions to process scripts during rendering.
+
+example:
+```go
+var context = NewRenderContext()
+context.SetVariable("user_state", func(ctx *RenderContext) string {
+    // check if the user is logged in, and return the state
+    return "logged_in"
+})
+
+context.SetVariable("name", "Mats")
+```
 ```html
-<body>
+{{ include(navbar) }}
 
-    {% if @name is joost %}
-        {% if @cool_level is very %}
-            Joost is awesome!
-        {% end %}
-        {% if @cool_level not very %}
-            Joost is not very cool, but he is {{ @cool_level }} cool
-        {% end %}
-    {% end %}
-    
-    <h1>Hey there {{ @name }}!</h1>
-    <p>Good to see you again</p>
 
-    {{ include(logo) }}
-</body>
+{% if @user_state is logged_in %}
+    <h1>You are logged in! welcome back, {{ @name }}!</h1>
+{% end %}
+{% if @user_state not logged_in %}
+    <h1>You seem to be new! please <a href="/login">login</a>.</h1>
+    <p>your state is {{ @user_state }}</p>
+{% end %}
+
+{{ include(footer) }}
 ```
 
+## Notes
 and planned features include:
  - For loops
 
