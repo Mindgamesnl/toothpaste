@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Example</title>
+</head>
+<body>
+    {% if @user_state is logged_in %}
+        <h1>You are logged in! welcome back, {{ @name }}!</h1>
+    {% end %}
+
+    {% if @user_state not logged_in %}
+        <h1>You seem to be new! please <a href="/login">login</a>.</h1>
+        <p>your state is {{ @user_state }}</p>
+    {% end %}
+</body>
+</html>
