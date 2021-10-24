@@ -58,35 +58,35 @@ func (n *TreeNode) parseType(root string) TreeNodeType {
 
 func (n *TreeNode) makeErrorNode(message string) []TreeReturnReplacement {
 	return []TreeReturnReplacement{
-		TreeReturnReplacement{
+		{
 			start: n.contentStart,
-			end: n.contentEnd,
+			end:   n.contentEnd,
 		},
-		TreeReturnReplacement{
-			start: n.start,
-			end: n.end,
-			newValue: "message",
+		{
+			start:    n.start,
+			end:      n.end,
+			newValue: message,
 		},
 	}
 }
 
 func (n *TreeNode) makeSelfReplacement(alsoRemoveBody bool) []TreeReturnReplacement {
-	if (alsoRemoveBody) {
+	if alsoRemoveBody {
 		return []TreeReturnReplacement{
-			TreeReturnReplacement{
+			{
 				start: n.start,
-				end: n.end,
+				end:   n.end,
 			},
-			TreeReturnReplacement{
+			{
 				start: n.contentStart,
-				end: n.contentEnd,
+				end:   n.contentEnd,
 			},
 		}
 	}
 	return []TreeReturnReplacement{
-		TreeReturnReplacement{
+		{
 			start: n.start,
-			end: n.end,
+			end:   n.end,
 		},
 	}
 }
