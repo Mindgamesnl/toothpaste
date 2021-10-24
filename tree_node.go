@@ -56,6 +56,41 @@ func (n *TreeNode) parseType(root string) TreeNodeType {
 	return TREE_NODE_TYPE_INVALID
 }
 
+func (n *TreeNode) makeErrorNode(message string) []TreeReturnReplacement {
+	return []TreeReturnReplacement{
+		TreeReturnReplacement{
+			start: n.contentStart,
+			end: n.contentEnd,
+		},
+		TreeReturnReplacement{
+			start: n.start,
+			end: n.end,
+			newValue: "message",
+		},
+	}
+}
+
+func (n *TreeNode) makeSelfReplacement(alsoRemoveBody bool) []TreeReturnReplacement {
+	if (alsoRemoveBody) {
+		return []TreeReturnReplacement{
+			TreeReturnReplacement{
+				start: n.start,
+				end: n.end,
+			},
+			TreeReturnReplacement{
+				start: n.contentStart,
+				end: n.contentEnd,
+			},
+		}
+	}
+	return []TreeReturnReplacement{
+		TreeReturnReplacement{
+			start: n.start,
+			end: n.end,
+		},
+	}
+}
+
 func (n *TreeNode) render(c *RenderContext) []TreeReturnReplacement {
 	if n.isRoot {
 		var responses []TreeReturnReplacement
@@ -69,13 +104,7 @@ func (n *TreeNode) render(c *RenderContext) []TreeReturnReplacement {
 	}
 
 	if n.nodeType == TREE_NODE_TYPE_END {
-		return []TreeReturnReplacement{
-			TreeReturnReplacement{
-				start: n.start,
-				end: n.end,
-				newValue: "",
-			},
-		}
+		return n.makeSelfReplacement(false)
 	}
 
 	if n.nodeType == TREE_NODE_TYPE_IF {
@@ -86,71 +115,27 @@ func (n *TreeNode) render(c *RenderContext) []TreeReturnReplacement {
 
 		if !lookupFound {
 			// false, so end here
-			return []TreeReturnReplacement{
-				TreeReturnReplacement{
-					start: n.start,
-					end: n.end,
-					newValue: "<b>Error! couldn't find variable " + lookupVariable[1:] + "</b>",
-				},
-			}
+			return n.makeErrorNode("<b>couldn't find variable " + lookupVariable[1:] + "</b>")
 		}
 
+		// handle statement
 		if selector == "is" {
 			if lookupValue != expected {
-				return []TreeReturnReplacement{
-					TreeReturnReplacement{
-						start: n.start,
-						end: n.end,
-						newValue: "",
-					},
-					TreeReturnReplacement{
-						start: n.contentStart,
-						end: n.contentEnd,
-						newValue: "",
-					},
-				}
+				return n.makeSelfReplacement(true)
 			}
 		} else if selector == "not" {
 			if lookupValue == expected {
-				return []TreeReturnReplacement{
-					TreeReturnReplacement{
-						start: n.start,
-						end: n.end,
-						newValue: "",
-					},
-					TreeReturnReplacement{
-						start: n.contentStart,
-						end: n.contentEnd,
-						newValue: "",
-					},
-				}
+				return n.makeSelfReplacement(true)
 			}
 		} else {
-			return []TreeReturnReplacement{
-				TreeReturnReplacement{
-					start: n.start,
-					end: n.end,
-					newValue: "Unknown state " + selector,
-				},
-			}
+			return n.makeErrorNode("<b>unknown state " + selector + "</b>")
 		}
 
+		// render children
 		if len(n.children) == 0 {
-			return []TreeReturnReplacement{
-				TreeReturnReplacement{
-					start: n.start,
-					end: n.end,
-					newValue: "",
-				},
-			}
+			return n.makeSelfReplacement(false)
 		} else {
-			var responses = []TreeReturnReplacement{
-				TreeReturnReplacement{
-					start: n.start,
-					end: n.end,
-					newValue: "",
-				},
-			}
+			var responses = n.makeSelfReplacement(false)
 			for i := range n.children {
 				var renderResults = n.children[i].render(c)
 				for i2 := range renderResults {
@@ -161,11 +146,5 @@ func (n *TreeNode) render(c *RenderContext) []TreeReturnReplacement {
 		}
 	}
 
-	return []TreeReturnReplacement{
-		TreeReturnReplacement{
-			start: n.start,
-			end: n.end,
-			newValue: "Unknown type " + strconv.Itoa(int(n.nodeType)),
-		},
-	}
+	return n.makeErrorNode("<b>unknown tag type " + strconv.Itoa(int(n.nodeType)) + "</b>")
 }
