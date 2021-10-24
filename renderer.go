@@ -45,6 +45,8 @@ func (r *Renderer) Render(renderContext *RenderContext, input string) (string, e
 			}
 			rootTreeNode = rootTreeNode.parent
 			rootTreeNode.addChildren(tn)
+		} else if tn.nodeType == TREE_NODE_TYPE_SET {
+			rootTreeNode.addChildren(tn)
 		} else {
 			tn.parent = rootTreeNode
 			rootTreeNode.addChildren(tn)

@@ -6,6 +6,16 @@ import (
 	"testing"
 )
 
+func TestVariableSetter(t *testing.T) {
+	var renderer = NewRenderer()
+	var context = NewRenderContext()
+
+	value, err := renderer.Render(context, readHtmlTest("testdata/set.html"))
+
+	assert.Nil(t, err)
+	assert.Contains(t, value, "value!")
+}
+
 func TestHelloNameHtml(t *testing.T) {
 	var content = readHtmlTest("testdata/hello-name.html")
 

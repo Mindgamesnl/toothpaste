@@ -1,6 +1,6 @@
 # toothpaste
 Toothpaste is a simple templating engine for Go web applications, inspired by Blade/Twig.
-It supports basic if-statements, variables, variable HTML sanitization by default (but also allows raw printing), recursive template importing with context and processing functions. 
+It supports basic if-statements, variables, inline variable definitions, variable HTML sanitization by default (but also allows raw printing), recursive template importing with context and processing functions. 
 
 Variables can be a `string`, `int`, `int8`, `int16`, `int64` and `func(ctx *RenderContext) string`. Variable types (or processors) will be resolved everytime a variable is invoked from your template. You can use functions to process scripts during rendering.
 
@@ -17,9 +17,10 @@ context.SetVariable("name", "Mats")
 ```html
 {{ include(navbar) }}
 
+{% set app_name "My cool app!" %}
 
 {% if @user_state is logged_in %}
-    <h1>You are logged in! welcome back, {{ @name }}!</h1>
+    <h1>You are logged in! welcome back to {{ @app_name }}, {{ @name }}!</h1>
 {% end %}
 {% if @user_state not logged_in %}
     <h1>You seem to be new! please <a href="/login">login</a>.</h1>

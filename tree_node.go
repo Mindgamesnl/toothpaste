@@ -11,6 +11,7 @@ type TreeNodeType int
 const (
 	TREE_NODE_TYPE_END = iota
 	TREE_NODE_TYPE_IF
+	TREE_NODE_TYPE_SET
 	TREE_NODE_TYPE_INVALID
 )
 
@@ -54,6 +55,8 @@ func (n *TreeNode) parseType(root string) TreeNodeType {
 		return TREE_NODE_TYPE_END
 	} else if t[:2] == "if" {
 		return TREE_NODE_TYPE_IF
+	}  else if t[:3] == "set" {
+		return TREE_NODE_TYPE_SET
 	}
 
 	return TREE_NODE_TYPE_INVALID
@@ -112,6 +115,15 @@ func (n *TreeNode) render(c *RenderContext) []TreeReturnReplacement {
 	}
 
 	if n.nodeType == TREE_NODE_TYPE_END {
+		return n.makeSelfReplacement(false)
+	}
+
+	if n.nodeType == TREE_NODE_TYPE_SET {
+		var parts = strings.Split(n.tag, " ")
+		var variableName= parts[1]
+		var value = n.tag[6 + len(variableName):]
+		value = value[:len(value)-1]
+		c.SetVariable(variableName, value)
 		return n.makeSelfReplacement(false)
 	}
 
