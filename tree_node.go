@@ -128,11 +128,11 @@ func (n *TreeNode) render(c *RenderContext) []TreeReturnReplacement {
 
 		// handle statement
 		if selector == "is" {
-			if lookupValue != expected {
+			if evaluateVariableValue(lookupValue, c) != expected {
 				return n.makeSelfReplacement(true)
 			}
 		} else if selector == "not" {
-			if lookupValue == expected {
+			if evaluateVariableValue(lookupValue, c) == expected {
 				return n.makeSelfReplacement(true)
 			}
 		} else {
