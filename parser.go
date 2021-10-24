@@ -4,6 +4,17 @@ import "regexp"
 
 var PLAIN_SEARCH_PATTERN *regexp.Regexp
 var TREE_SEARCH_PATTERN *regexp.Regexp
+var CLEANER *regexp.Regexp
+
+//
+
+func getCleanerPattern() *regexp.Regexp {
+	if CLEANER == nil {
+		r, _ := regexp.Compile(`[ \t]`)
+		CLEANER = r
+	}
+	return CLEANER
+}
 
 func getTreePatternMatcher() *regexp.Regexp {
 	if TREE_SEARCH_PATTERN == nil {

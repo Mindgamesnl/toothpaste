@@ -2,6 +2,7 @@ package toothpaste
 
 import (
 	"sort"
+	"strings"
 )
 
 type Renderer struct {
@@ -59,11 +60,16 @@ func (r *Renderer) Render(renderContext *RenderContext, input string) (string, e
 		return treeResult[i].start > treeResult[j].start
 	})
 
+	var removedLineNumbers []int
+
 	var removedBytes = 0
 	for i := range treeResult {
 		var r = treeResult[i]
 		var a = input
-		input = input[:r.start - removedBytes] + r.newValue + a[r.end-removedBytes:]
+		var before = input[:r.start - removedBytes]
+		var lineNumber = strings.Count(before, "\n") + 1
+		removedLineNumbers = append(removedLineNumbers, lineNumber)
+		input = before + r.newValue + a[r.end-removedBytes:]
 	}
 
 	// render plain nodes (include, and variable types)
@@ -81,5 +87,26 @@ func (r *Renderer) Render(renderContext *RenderContext, input string) (string, e
 			input = input[:plainNodes[i].start] + value + input[plainNodes[i].end:]
 		}
 	}
-	return input, rootTreeNode.failure
+
+	// shit we can clean
+	var elements = strings.Split(strings.TrimSuffix(input, "\n"), "\n")
+	var b strings.Builder
+	OUTER:
+	for i := range elements {
+		for i2 := range removedLineNumbers {
+			if removedLineNumbers[i2] == i+1 {
+				// check if this line is anything other than a break
+				if len(getCleanerPattern().ReplaceAll([]byte(elements[i]), []byte(""))) == 0 {
+					// Don't add this line!
+					continue OUTER
+				}
+			}
+		}
+		b.WriteString(elements[i])
+		if i != len(elements) -1 {
+			b.WriteString("\n")
+		}
+	}
+
+	return b.String(), rootTreeNode.failure
 }
